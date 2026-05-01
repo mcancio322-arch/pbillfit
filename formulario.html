@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBILL — Empieza tu transformación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #C0392B;
+    --red-bright: #E74C3C;
+    --red-dark: #7B241C;
+    --black: #0A0A0A;
+    --black2: #111111;
+    --card: #161616;
+    --card2: #1C1C1C;
+    --white: #F0EDE8;
+    --gray: #888;
+    --gray2: #555;
+    --border: #222;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.35;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(10,10,10,0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--red); }
+
+  .nav-back {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-back:hover { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  .form-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 24px 60px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-container {
+    width: 100%;
+    max-width: 640px;
+    margin-bottom: 48px;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  .progress-counter {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--gray2);
+  }
+
+  .progress-bar-track {
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--red);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── STEP CARD ── */
+  .steps-wrapper {
+    width: 100%;
+    max-width: 640px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .step-card {
+    background: var(--card);
+    border-top: 2px solid var(--red);
+    padding: 48px;
+    display: none;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .step-card.active {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .step-card.exit-left {
+    opacity: 0;
+    transform: translateX(-60px);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .step-number {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--gray2);
+    margin-bottom: 8px;
+  }
+
+  .step-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .step-subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--gray);
+    margin-bottom: 36px;
+    line-height: 1.5;
+  }
+
+  /* ── FORM ELEMENTS ── */
+  .form-group {
+    margin-bottom: 24px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--black2);
+    border: 1px solid var(--border);
+    border-bottom: 2px solid var(--gray2);
+    color: var(--white);
+    padding: 16px 18px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    outline: none;
+    transition: border-color 0.25s, background 0.25s;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-bottom-color: var(--red);
+    background: #141414;
+  }
+
+  .form-group input::placeholder { color: var(--gray2); }
+
+  .form-group select option { background: var(--black2); color: var(--white); }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+  }
+
+  /* ── ERROR STATE ── */
+  .form-group.error input,
+  .form-group.error select,
+  .form-group.error textarea {
+    border-bottom-color: var(--red-bright);
+    animation: shake 0.35s ease;
+  }
+
+  .error-msg {
+    display: none;
+    font-size: 12px;
+    color: var(--red-bright);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .form-group.error .error-msg { display: block; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-6px); }
+    40%       { transform: translateX(6px); }
+    60%       { transform: translateX(-4px); }
+    80%       { transform: translateX(4px); }
+  }
+
+  /* ── RADIO / SELECT OPTIONS ── */
+  .options-grid {
+    display: grid;
+    gap: 10px;
+  }
+
+  .options-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+
+  .radio-option {
+    position: relative;
+  }
+
+  .radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .radio-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    background: var(--black2);
+    border: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 16px;
+    color: var(--gray);
+    line-height: 1.3;
+  }
+
+  .radio-label:hover {
+    border-left-color: var(--gray2);
+    color: var(--white);
+    background: #141414;
+  }
+
+  .radio-option input[type="radio"]:checked + .radio-label {
+    border-left-color: var(--red);
+    border-color: var(--red-dark);
+    background: #1A0A0A;
+    color: var(--white);
+  }
+
+  .radio-dot {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--gray2);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .radio-option input[type="radio"]:checked + .radio-label .radio-dot {
+    border-color: var(--red);
+    background: var(--red);
+  }
+
+  .radio-option input[type="radio"]:checked + .radio-label .radio-dot::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--white);
+  }
+
+  .radio-text strong {
+    display: block;
+    font-weight: 700;
+    color: var(--white);
+    font-size: 16px;
+    margin-bottom: 2px;
+  }
+
+  .radio-text small {
+    font-size: 13px;
+    color: var(--gray2);
+  }
+
+  .radio-option.error-radio .radio-label {
+    border-color: var(--red-bright);
+    animation: shake 0.35s ease;
+  }
+
+  /* ── NAVIGATION BUTTONS ── */
+  .step-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 36px;
+    gap: 16px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    flex: 1;
+    justify-content: center;
+  }
+
+  .btn-primary:hover { background: var(--red-bright); }
+
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--gray);
+    border: 1.5px solid var(--border);
+    padding: 16px 24px;
+  }
+
+  .btn-ghost:hover { border-color: var(--gray2); color: var(--white); }
+
+  .btn-ghost.hidden { opacity: 0; pointer-events: none; }
+
+  /* ── SUCCESS SCREEN ── */
+  #success-screen {
+    display: none;
+    width: 100%;
+    max-width: 640px;
+    text-align: center;
+    padding: 64px 48px;
+    background: var(--card);
+    border-top: 2px solid #2a6a1a;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  #success-screen.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: #1a2e14;
+    border: 2px solid #2a6a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    font-size: 28px;
+  }
+
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 6vw, 56px);
+    letter-spacing: 0.04em;
+    color: var(--white);
+    line-height: 0.95;
+    margin-bottom: 16px;
+  }
+
+  .success-title span { color: #4CAF50; }
+
+  .success-desc {
+    font-size: 17px;
+    color: var(--gray);
+    line-height: 1.6;
+    margin-bottom: 36px;
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+  }
+
+  /* ── DOTS ── */
+  .dots-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 28px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--border);
+    border-radius: 50%;
+    transition: background 0.3s, width 0.3s;
+  }
+
+  .dot.active {
+    background: var(--red);
+    width: 20px;
+    border-radius: 3px;
+  }
+
+  .dot.done { background: var(--gray2); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .form-page { padding: 90px 16px 48px; }
+    .step-card { padding: 32px 24px; }
+    #success-screen { padding: 48px 24px; }
+    .options-grid.cols-2 { grid-template-columns: 1fr; }
+    .progress-container { margin-bottom: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">P<span>B</span>ILL</a>
+  <a href="index.html" class="nav-back">← Volver al inicio</a>
+</nav>
+
+<div class="form-page">
+
+  <!-- Progress -->
+  <div class="progress-container" id="progress-container">
+    <div class="progress-header">
+      <span class="progress-label">Formulario de inicio</span>
+      <span class="progress-counter" id="step-counter">Paso 1 de 9</span>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-fill" style="width: 11%;"></div>
+    </div>
+  </div>
+
+  <!-- Steps wrapper -->
+  <div class="steps-wrapper" id="steps-wrapper">
+
+    <!-- STEP 1: Nombre -->
+    <div class="step-card active" id="step-1">
+      <p class="step-number">PASO 01 — IDENTIFICACIÓN</p>
+      <h2 class="step-title">¿CÓMO TE LLAMAS?</h2>
+      <p class="step-subtitle">Empecemos por conocernos.</p>
+      <div class="form-group" id="g-nombre">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre y apellido" autocomplete="name">
+        <span class="error-msg">Por favor, introduce tu nombre completo.</span>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost hidden" onclick="prevStep()">← Anterior</button>
+        <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Email + Teléfono -->
+    <div class="step-card" id="step-2">
+      <p class="step-number">PASO 02 — CONTACTO</p>
+      <h2 class="step-title">¿CÓMO TE CONTACTAMOS?</h2>
+      <p class="step-subtitle">Solo para avisarte cuando estemos listos para hablar.</p>
+      <div class="form-group" id="g-email">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" placeholder="tu@email.com" autocomplete="email">
+        <span class="error-msg">Introduce un correo electrónico válido.</span>
+      </div>
+      <div class="form-group" id="g-telefono">
+        <label for="telefono">Teléfono (WhatsApp)</label>
+        <input type="tel" id="telefono" name="telefono" placeholder="+34 600 000 000" autocomplete="tel">
+        <span class="error-msg">Introduce tu número de teléfono.</span>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="prevStep()">← Anterior</button>
+        <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Edad -->
+    <div class="step-card" id="step-3">
+      <p class="step-number">PASO 03 — DATOS BÁSICOS</p>
+      <h2 class="step-title">¿CUÁNTOS AÑOS TIENES?</h2>
+      <p class="step-subtitle">Importante para diseñar tu plan correctamente.</p>
+      <div class="form-group" id="g-edad">
+        <label for="edad">Edad</label>
+        <input type="number" id="edad" name="edad" placeholder="Ej: 28" min="16" max="75">
+        <span class="error-msg">Introduce una edad válida (16–75 años).</span>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="prevStep()">← Anterior</button>
+        <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Objetivo principal -->
+    <div class="step-card" id="step-4">
+      <p class="step-number">PASO 04 — OBJETIVO</p>
+      <h2 class="step-title">¿CUÁL ES TU<br>OBJETIVO PRINCIPAL?</h2>
+      <p class="step-subtitle">Sé honesto. Todos los objetivos son válidos.</p>
+      <div class="options-grid" id="g-objetivo">
+        <div class="radio-option">
+          <input type="radio" id="obj-grasa" name="objetivo" value="perder-grasa">
+          <label class="radio-label" for="obj-grasa">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>Perder grasa</strong><small>Definir el cuerpo, bajar peso</small></span>
+          </label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="obj-musculo" name="objetivo" value="ganar-musculo">
+          <label class="radio-label" for="obj-musculo">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>Ganar músculo</strong><small>Masa, volumen y fuerza</small></span>
+          </label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="obj-rendimiento" name="objetivo" value="rendimiento">
+          <label class="radio-label" for="obj-rendimiento">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>Mejorar rendimiento</strong><small>Atletismo, deporte o condición física</small></span>
+          </label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="obj-salud" name="objetivo" value="salud-lesiones">
+          <label class="radio-label" for="obj-salud">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>Salud y lesiones</strong><small>Postura, movilidad, rehabilitación</small></span>
+          </label>
+        </div>
+      </div>
+      <p class="error-msg" id="error-objetivo" style="margin-top:10px; display:none;">Selecciona uno de los objetivos.</p>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="prevStep()">← Anterior</button>
+        <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: Nivel -->
+    <div class="step-card" id="step-5">
+      <p class="step-number">PASO 05 — EXPERIENCIA</p>
+      <h2 class="step-title">¿CUÁL ES TU NIVEL<br>DE ENTRENAMIENTO?</h2>
+      <p class="step-subtitle">Sin filtros. Saber dónde estás es el primer paso.</p>
+      <div class="options-grid" id="g-nivel">
+        <div class="radio-option">
+          <input type="radio" id="nv-principiante" name="nivel" value="principiante">
+          <label class="radio-label" for="nv-principiante">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>Principiante</strong><small>Menos de 1 año de entrenamiento</small></span>
+          </label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="nv-intermedio" name="nivel" value="intermedio">
+          <label class="radio-label" for="nv-intermedio">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>Intermedio</strong><small>De 1 a 3 años con constancia</small></span>
+          </label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="nv-avanzado" name="nivel" value="avanzado">
+          <label class="radio-label" for="nv-avanzado">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>Avanzado</strong><small>Más de 3 años, técnica sólida</small></span>
+          </label>
+        </div>
+      </div>
+      <p class="error-msg" id="error-nivel" style="margin-top:10px; display:none;">Selecciona tu nivel de entrenamiento.</p>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="prevStep()">← Anterior</button>
+        <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 6: Días disponibles -->
+    <div class="step-card" id="step-6">
+      <p class="step-number">PASO 06 — DISPONIBILIDAD</p>
+      <h2 class="step-title">¿CUÁNTOS DÍAS PUEDES<br>ENTRENAR A LA SEMANA?</h2>
+      <p class="step-subtitle">Diseñaremos el plan alrededor de tu vida, no al revés.</p>
+      <div class="options-grid cols-2" id="g-dias">
+        <div class="radio-option">
+          <input type="radio" id="dias-2" name="dias" value="2">
+          <label class="radio-label" for="dias-2">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>2 días</strong></span>
+          </label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="dias-3" name="dias" value="3">
+          <label class="radio-label" for="dias-3">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>3 días</strong></span>
+          </label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="dias-4" name="dias" value="4">
+          <label class="radio-label" for="dias-4">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>4 días</strong></span>
+          </label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="dias-5" name="dias" value="5">
+          <label class="radio-label" for="dias-5">
+            <span class="radio-dot"></span>
+            <span class="radio-text"><strong>5 días o más</strong></span>
+          </label>
+        </div>
+      </div>
+      <p class="error-msg" id="error-dias" style="margin-top:10px; display:none;">Selecciona los días disponibles.</p>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="prevStep()">← Anterior</button>
+        <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 7: Lesiones -->
+    <div class="step-card" id="step-7">
+      <p class="step-number">PASO 07 — SALUD</p>
+      <h2 class="step-title">¿TIENES ALGUNA LESIÓN<br>O LIMITACIÓN FÍSICA?</h2>
+      <p class="step-subtitle">Cuéntame todo. Esta información es clave para diseñar tu plan con seguridad.</p>
+      <div class="form-group" id="g-lesiones">
+        <label for="lesiones">Lesiones o limitaciones</label>
+        <textarea id="lesiones" name="lesiones" placeholder="Ej: Dolor lumbar crónico, lesión de menisco en rodilla derecha, sin lesiones conocidas..."></textarea>
+        <span class="error-msg">Describe tus lesiones o escribe &quot;Sin lesiones conocidas&quot;.</span>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="prevStep()">← Anterior</button>
+        <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 8: Mensaje -->
+    <div class="step-card" id="step-8">
+      <p class="step-number">PASO 08 — ÚLTIMO PASO</p>
+      <h2 class="step-title">¿ALGO MÁS QUE<br>DEBA SABER?</h2>
+      <p class="step-subtitle">Cualquier detalle que creas relevante. También puede estar vacío si no tienes nada que añadir — pero tienes que confirmarlo.</p>
+      <div class="form-group" id="g-mensaje">
+        <label for="mensaje">Mensaje adicional</label>
+        <textarea id="mensaje" name="mensaje" placeholder="Cuéntame lo que quieras: tu historia, tus dudas, tus miedos, por qué ahora..."></textarea>
+        <span class="error-msg">Escribe algo o deja el campo vacío y marca la casilla.</span>
+      </div>
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:24px; cursor:pointer;" onclick="toggleConfirm()">
+        <div id="confirm-box" style="width:18px; height:18px; border:2px solid var(--gray2); flex-shrink:0; margin-top:2px; display:flex; align-items:center; justify-content:center; transition:border-color 0.2s; background:transparent;"></div>
+        <span style="font-size:14px; color:var(--gray); line-height:1.5; user-select:none;">No tengo nada más que añadir. Todo lo importante ya está dicho.</span>
+      </div>
+      <p class="error-msg" id="error-mensaje" style="display:none;">Escribe un mensaje o confirma que no tienes nada que añadir.</p>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="prevStep()">← Anterior</button>
+        <button class="btn btn-primary" onclick="submitForm()" id="submit-btn">ENVIAR FORMULARIO →</button>
+      </div>
+    </div>
+
+  </div><!-- /steps-wrapper -->
+
+  <!-- Dots -->
+  <div class="dots-row" id="dots-row">
+    <div class="dot active" id="dot-1"></div>
+    <div class="dot" id="dot-2"></div>
+    <div class="dot" id="dot-3"></div>
+    <div class="dot" id="dot-4"></div>
+    <div class="dot" id="dot-5"></div>
+    <div class="dot" id="dot-6"></div>
+    <div class="dot" id="dot-7"></div>
+    <div class="dot" id="dot-8"></div>
+  </div>
+
+  <!-- Success -->
+  <div id="success-screen">
+    <div class="success-icon">✓</div>
+    <h2 class="success-title">¡FORMULARIO<br><span>ENVIADO!</span></h2>
+    <p class="success-desc">Te contactaremos en menos de 24 horas para agendar tu videollamada gratuita.<br>La transformación empieza ahora.</p>
+    <a href="index.html" class="btn btn-primary" style="display:inline-flex; justify-content:center; padding:18px 40px;">← Volver al inicio</a>
+  </div>
+
+</div><!-- /form-page -->
+
+<script>
+  const TOTAL_STEPS = 8;
+  let currentStep = 1;
+  let confirmChecked = false;
+
+  function updateUI() {
+    const pct = Math.round((currentStep / TOTAL_STEPS) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('step-counter').textContent = 'Paso ' + currentStep + ' de ' + TOTAL_STEPS;
+
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const dot = document.getElementById('dot-' + i);
+      dot.className = 'dot';
+      if (i < currentStep) dot.classList.add('done');
+      else if (i === currentStep) dot.classList.add('active');
+    }
+  }
+
+  function showStep(from, to, direction) {
+    const fromEl = document.getElementById('step-' + from);
+    const toEl   = document.getElementById('step-' + to);
+
+    // Exit animation
+    fromEl.classList.add(direction === 1 ? 'exit-left' : 'exit-right');
+    fromEl.style.position = 'absolute';
+    fromEl.style.width = '100%';
+
+    setTimeout(() => {
+      fromEl.classList.remove('active', 'exit-left', 'exit-right');
+      fromEl.style.position = '';
+      fromEl.style.width = '';
+
+      toEl.style.transform = direction === 1 ? 'translateX(60px)' : 'translateX(-60px)';
+      toEl.style.opacity = '0';
+      toEl.classList.add('active');
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          toEl.style.transform = 'translateX(0)';
+          toEl.style.opacity = '1';
+        });
+      });
+    }, 280);
+
+    currentStep = to;
+    updateUI();
+
+    // Scroll to top of form on mobile
+    document.querySelector('.progress-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function validateStep(step) {
+    let valid = true;
+
+    if (step === 1) {
+      const nombre = document.getElementById('nombre').value.trim();
+      const g = document.getElementById('g-nombre');
+      if (nombre.length < 3) { g.classList.add('error'); valid = false; }
+      else { g.classList.remove('error'); }
+    }
+
+    else if (step === 2) {
+      const email = document.getElementById('email').value.trim();
+      const tel   = document.getElementById('telefono').value.trim();
+      const ge = document.getElementById('g-email');
+      const gt = document.getElementById('g-telefono');
+
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!emailOk) { ge.classList.add('error'); valid = false; }
+      else { ge.classList.remove('error'); }
+
+      if (tel.length < 7) { gt.classList.add('error'); valid = false; }
+      else { gt.classList.remove('error'); }
+    }
+
+    else if (step === 3) {
+      const edad = parseInt(document.getElementById('edad').value);
+      const g = document.getElementById('g-edad');
+      if (isNaN(edad) || edad < 16 || edad > 75) { g.classList.add('error'); valid = false; }
+      else { g.classList.remove('error'); }
+    }
+
+    else if (step === 4) {
+      const val = document.querySelector('input[name="objetivo"]:checked');
+      const err = document.getElementById('error-objetivo');
+      if (!val) { err.style.display = 'block'; valid = false; }
+      else { err.style.display = 'none'; }
+    }
+
+    else if (step === 5) {
+      const val = document.querySelector('input[name="nivel"]:checked');
+      const err = document.getElementById('error-nivel');
+      if (!val) { err.style.display = 'block'; valid = false; }
+      else { err.style.display = 'none'; }
+    }
+
+    else if (step === 6) {
+      const val = document.querySelector('input[name="dias"]:checked');
+      const err = document.getElementById('error-dias');
+      if (!val) { err.style.display = 'block'; valid = false; }
+      else { err.style.display = 'none'; }
+    }
+
+    else if (step === 7) {
+      const val = document.getElementById('lesiones').value.trim();
+      const g = document.getElementById('g-lesiones');
+      if (val.length < 5) { g.classList.add('error'); valid = false; }
+      else { g.classList.remove('error'); }
+    }
+
+    else if (step === 8) {
+      const msg = document.getElementById('mensaje').value.trim();
+      const err = document.getElementById('error-mensaje');
+      if (msg.length === 0 && !confirmChecked) {
+        err.style.display = 'block'; valid = false;
+      } else { err.style.display = 'none'; }
+    }
+
+    return valid;
+  }
+
+  function nextStep() {
+    if (!validateStep(currentStep)) return;
+    if (currentStep < TOTAL_STEPS) {
+      showStep(currentStep, currentStep + 1, 1);
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 1) {
+      showStep(currentStep, currentStep - 1, -1);
+    }
+  }
+
+  function toggleConfirm() {
+    confirmChecked = !confirmChecked;
+    const box = document.getElementById('confirm-box');
+    if (confirmChecked) {
+      box.style.borderColor = '#4CAF50';
+      box.style.background = '#4CAF50';
+      box.innerHTML = '<span style="color:#fff; font-size:11px; font-weight:700;">✓</span>';
+    } else {
+      box.style.borderColor = 'var(--gray2)';
+      box.style.background = 'transparent';
+      box.innerHTML = '';
+    }
+  }
+
+  async function submitForm() {
+    if (!validateStep(8)) return;
+
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.textContent = 'ENVIANDO...';
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.7';
+
+    const data = {
+      nombre:    document.getElementById('nombre').value.trim(),
+      email:     document.getElementById('email').value.trim(),
+      telefono:  document.getElementById('telefono').value.trim(),
+      edad:      document.getElementById('edad').value.trim(),
+      objetivo:  (document.querySelector('input[name="objetivo"]:checked') || {}).value || '',
+      nivel:     (document.querySelector('input[name="nivel"]:checked') || {}).value || '',
+      dias:      (document.querySelector('input[name="dias"]:checked') || {}).value || '',
+      lesiones:  document.getElementById('lesiones').value.trim(),
+      mensaje:   document.getElementById('mensaje').value.trim() || '(Sin mensaje adicional)',
+    };
+
+    try {
+      const response = await fetch('https://formspree.io/f/xzdyqpdk', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) throw new Error('Error en el servidor');
+
+      const stepsWrapper = document.getElementById('steps-wrapper');
+      const progressContainer = document.getElementById('progress-container');
+      const dotsRow = document.getElementById('dots-row');
+      const successScreen = document.getElementById('success-screen');
+
+      stepsWrapper.style.opacity = '0';
+      stepsWrapper.style.transform = 'translateY(-20px)';
+      stepsWrapper.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      progressContainer.style.opacity = '0';
+      progressContainer.style.transition = 'opacity 0.3s ease';
+      dotsRow.style.opacity = '0';
+      dotsRow.style.transition = 'opacity 0.3s ease';
+
+      setTimeout(() => {
+        stepsWrapper.style.display = 'none';
+        progressContainer.style.display = 'none';
+        dotsRow.style.display = 'none';
+        successScreen.style.display = 'block';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            successScreen.classList.add('visible');
+          });
+        });
+      }, 350);
+
+    } catch (err) {
+      submitBtn.textContent = 'ENVIAR FORMULARIO →';
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      alert('Hubo un error al enviar. Escríbeme directamente a mcancio322@gmail.com');
+    }
+  }
+
+  // Allow pressing Enter to advance
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      if (currentStep < TOTAL_STEPS) nextStep();
+      else submitForm();
+    }
+  });
+
+  // Add exit-right style dynamically
+  const style = document.createElement('style');
+  style.textContent = `.step-card.exit-right { opacity:0; transform:translateX(60px); transition:opacity 0.3s ease, transform 0.3s cubic-bezier(0.4,0,0.2,1); }`;
+  document.head.appendChild(style);
+</script>
+
+<!-- WhatsApp Floating Button -->
+<a href="https://wa.me/34672737327" target="_blank" rel="noopener noreferrer" id="whatsapp-btn" aria-label="Contactar por WhatsApp">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" fill="white">
+    <path d="M16 0C7.164 0 0 7.163 0 16c0 2.822.736 5.463 2.027 7.754L0 32l8.522-2.004A15.93 15.93 0 0 0 16 32c8.836 0 16-7.163 16-16S24.836 0 16 0zm0 29.333a13.27 13.27 0 0 1-6.77-1.853l-.486-.289-5.055 1.189 1.226-4.918-.317-.504A13.236 13.236 0 0 1 2.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.878c-.398-.199-2.352-1.16-2.717-1.293-.364-.133-.629-.199-.894.2-.265.398-1.027 1.292-1.259 1.558-.232.265-.464.298-.862.1-.398-.2-1.681-.62-3.2-1.974-1.183-1.054-1.981-2.356-2.213-2.754-.232-.398-.025-.613.174-.811.179-.178.398-.465.597-.697.199-.233.265-.399.398-.665.133-.265.066-.497-.033-.696-.1-.199-.894-2.155-1.225-2.95-.323-.775-.65-.67-.894-.683l-.762-.013c-.265 0-.696.1-1.061.497-.364.398-1.392 1.36-1.392 3.316 0 1.955 1.425 3.844 1.624 4.109.199.266 2.804 4.28 6.793 5.997.95.41 1.69.655 2.268.839.952.303 1.82.26 2.505.158.764-.114 2.352-.962 2.683-1.89.332-.928.332-1.724.232-1.89-.099-.166-.364-.265-.762-.464z"/>
+  </svg>
+</a>
+
+<style>
+  #whatsapp-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    width: 58px;
+    height: 58px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35), 0 2px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  #whatsapp-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5), 0 2px 8px rgba(0,0,0,0.3);
+  }
+  #whatsapp-btn:active {
+    transform: scale(0.96);
+  }
+</style>
+
+</body>
+</html>
