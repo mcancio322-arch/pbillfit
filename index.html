@@ -172,7 +172,7 @@
     font-size: 18px;
     font-weight: 400;
     color: var(--gray);
-    max-width: 520px;
+    max-width: 600px;
     line-height: 1.5;
     opacity: 0;
     transform: translateY(20px);
@@ -270,6 +270,19 @@
   }
 
 
+  /* ── LA MOVILIDAD ES EL MEDIO ── */
+  #medio { background: var(--black2); }
+  .medio-chain { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 20px; align-items: stretch; max-width: 1100px; }
+  .medio-step { background: var(--card); border: 1px solid var(--border); padding: 28px 26px; }
+  .medio-step.on { border-color: var(--red); background: linear-gradient(180deg, rgba(192,57,43,.14), var(--card)); }
+  .medio-n { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--red); line-height: 1; }
+  .medio-step h3 { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: 28px; letter-spacing: .02em; color: var(--white); margin-top: 10px; line-height: 1; }
+  .medio-step p { font-size: 16px; color: var(--gray); line-height: 1.5; margin-top: 10px; }
+  .medio-arrow { align-self: center; font-size: 32px; color: var(--red); }
+  @media (max-width: 768px) {
+    .medio-chain { grid-template-columns: 1fr; gap: 10px; }
+    .medio-arrow { transform: rotate(90deg); justify-self: center; font-size: 26px; }
+  }
   /* ── LA APP ── */
   #app { background: var(--black); }
   .phones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; max-width: 1040px; }
@@ -978,12 +991,26 @@
 <section id="hero">
   <div class="hero-bg-line"></div>
   <div class="hero-number">P</div>
-  <p class="hero-tag">Asesoría Online · Entrenamiento & Nutrición</p>
-  <h1 class="hero-title">TRANSFORMA<br>TU CUERPO.</h1>
-  <p class="hero-sub">Coaching online personalizado. Sin excusas, sin horarios, con resultados reales.</p>
+  <p class="hero-tag">Asesoría Online · Fuerza · Movilidad · Nutrición</p>
+  <h1 class="hero-title">FUERZA<br>PARA TODA<br>LA VIDA.</h1>
+  <p class="hero-sub">La movilidad no es el objetivo: es lo que te deja entrenar fuerte durante años. Más rango, mejores posiciones y cargas que suben sin que el cuerpo te pase factura.</p>
   <div class="hero-slogan">« La intención es lo que cambia »</div>
   <div class="hero-actions">
     <a href="https://app.pbillfit.com/empezar" class="btn btn-primary">Quiero empezar →</a>
+  </div>
+</section>
+
+<!-- LA MOVILIDAD ES EL MEDIO -->
+<section id="medio">
+  <p class="section-tag reveal">Mi forma de entrenar</p>
+  <h2 class="section-title reveal">LA MOVILIDAD<br>NO ES EL FIN.</h2>
+  <p class="section-sub reveal">Es el medio. Trabajo tu rango activo para que entrenes la fuerza mejor y durante muchos más años.</p>
+  <div class="medio-chain reveal">
+    <div class="medio-step"><span class="medio-n">01</span><h3>Rango activo</h3><p>No solo llegar a la postura: controlarla y tener fuerza en ella.</p></div>
+    <div class="medio-arrow" aria-hidden="true">→</div>
+    <div class="medio-step"><span class="medio-n">02</span><h3>Más posiciones donde eres fuerte</h3><p>Sentadillas más profundas, hombros que empujan sin molestias. Más rango = más músculo trabajando.</p></div>
+    <div class="medio-arrow" aria-hidden="true">→</div>
+    <div class="medio-step on"><span class="medio-n">03</span><h3>Fuerza que dura</h3><p>Entrenas más años, sin parar cada pocos meses por una lesión. Ese es el objetivo.</p></div>
   </div>
 </section>
 
@@ -1124,8 +1151,8 @@
     <div class="reason-card">
       <div class="reason-num"><span>02</span></div>
       <div class="reason-body">
-        <h3 class="reason-title">Postura, movilidad y técnica desde el primer día</h3>
-        <p class="reason-desc">No dejamos para luego lo que hay que hacer bien desde el inicio. Corregirlo ahora evita lesiones.</p>
+        <h3 class="reason-title">Rango y técnica para cargar más, más tiempo</h3>
+        <p class="reason-desc">Desde el primer día trabajamos tu rango y tu técnica. Así las cargas suben sin que el cuerpo te frene después.</p>
       </div>
     </div>
     <div class="reason-card">
